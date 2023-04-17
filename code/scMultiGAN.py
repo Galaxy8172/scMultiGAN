@@ -1,7 +1,6 @@
 import torch
 import torch.optim as optim
 import time
-import seaborn as sns
 from utiles import CriticUpdater, mask_data, mkdir,GeneratorLoss,one_hot
 import sys
 from pathlib import Path
@@ -37,7 +36,6 @@ def scMultiGAN(args, data_gen, mask_gen, data_critic, mask_critic, data_loader):
     ones = torch.ones(batch_size).to(device)
 
     lrate = args.lr
-    #lrate = 1e-5
     generator_loss = GeneratorLoss()
     data_gen_optimizer = optim.Adam(
         data_gen.parameters(), lr=lrate, betas=(.5, .9))
@@ -77,9 +75,6 @@ def scMultiGAN(args, data_gen, mask_gen, data_critic, mask_critic, data_loader):
             'critic_updates': critic_updates,
             'args': args,
         }, str(path))
-
-    sns.set()
-
     start = time.time()
     epoch_start = start
 
