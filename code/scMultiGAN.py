@@ -12,7 +12,7 @@ Tensor = torch.cuda.FloatTensor if cuda else torch.Tensor
 
 def scMultiGAN(args, data_gen, mask_gen, data_critic, mask_critic, data_loader):
     n_critic = args.n_critic
-    gp_lambda = args.gp_lambda
+    lambd = args.lambd
     batch_size = args.batch_size
     nz = args.latent_dim
     epochs = args.epoch
@@ -48,9 +48,9 @@ def scMultiGAN(args, data_gen, mask_gen, data_critic, mask_critic, data_loader):
         mask_critic.parameters(), lr=lrate, betas=(.5, .9))
 
     update_data_critic = CriticUpdater(
-        data_critic, data_critic_optimizer, eps, ones, gp_lambda)
+        data_critic, data_critic_optimizer, eps, ones, lambd)
     update_mask_critic = CriticUpdater(
-        mask_critic, mask_critic_optimizer, eps, ones, gp_lambda)
+        mask_critic, mask_critic_optimizer, eps, ones, lambd)
 
     start_epoch = 0
     critic_updates = 0
