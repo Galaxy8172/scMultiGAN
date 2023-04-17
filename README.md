@@ -12,7 +12,13 @@ The wide application of single-cell RNA sequencing (scRNA-seq) technology has ma
 ## Dataset
 We used a demo dataset that contains the no-imputed data and the corresponding cell label files. For more details, please see the `data`
 ## scMultiGAN parameters:
-1. `train_scMultiGAN.py`
+1. `generate.data.R`
+```bash
+--expression_matrix_path  #str, path of the raw data
+--file_suffix             #str, suffix of the input file, "csv" or "txt/tsv"
+--label_file_path         #str, path of the label file
+```
+3. `train_scMultiGAN.py`
 ```bash
 --epoch            #int
 --batch-size       #int
@@ -32,10 +38,28 @@ We used a demo dataset that contains the no-imputed data and the corresponding c
 --checkpoint       #str, the path of the checkpoint model.
 --num_workers      #int, the number of the cores for loading data from disk
 ```
-2. `train_scMultiGAN_impute.py`
+3. `train_scMultiGAN_impute.py`  
 Same parameter definition as above. Additional parameter definition as follows.
 ```bash
 --pretrain         #str, data generator's model trained from train_scMultiGAN.py.
 --imputeronly      #flag, if used, it means only imputing is performed without additinoal training.
 --imputer_model    #str, path of the imputer model for imputing expression data.
 ```
+## An example to run scMultiGAN
+1. Data preprocessing process
+* `Rscript generate.data.R --expression_matrix_path "raw.txt" --file_suffix "txt" --label_file_path "label.txt" `  
+&emsp;
+Running this code will generate input data for GAN network training and output two parameters required for training on the screen, `img_size` and `ncls`.
+2. Train scMultiGAN
+* `python train_scMultiGAN.py --epoch 100 --batch-size 12 save-interval 10 --d_file scMultiGAN.csv --c_file label.txt --output_dir ./ --lr 1e-4`  
+&emsp;
+The `scMultiGAN.csv` is the output of the `Data preprocessing process`  
+3. Train scMultiGAN_impute
+* `python train_scMultiGAN_impute.py --epoch 100 --batch-size 12 save-interval 10 --d_file scMultiGAN.csv --c_file label.txt --lr 1e-4 --pretrain "model/0001.pth --checkpoint "model_impute/0001.pth" "--output_dir "./"`  
+&emsp; 
+When the `imputeronly` parameter is not used, load the pre-trained model of train_scMultiGAN.py and load the checkpoint model.
+* `python train_scMultiGAN_impute.py --d_file scMultiGAN.csv --c_file label.txt --imputer_model "model_impute/0001.pth" "--output_dir "./"`   
+&emsp;
+When the `imputeronly` parameter is used, load the imputer model of train_scMultiGAN_impute.py to impute expression matrix.
+## Acknowledgments
+We are very grateful to Li et al. and Xu et al., whose source code has been very helpful to us. You can open their project code at the following links: [scIGANs](https://github.com/steveli/misgan) and [MisGAN](https://github.com/xuyungang/scIGANs).
