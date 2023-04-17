@@ -51,14 +51,14 @@ Same parameter definition as above. Additional parameter definition as follows.
 &emsp;
 Running this code will generate input data for GAN network training and output two parameters required for training on the screen, `img_size` and `ncls`.
 2. Train scMultiGAN
-* `python train_scMultiGAN.py --epoch 100 --batch-size 12 save-interval 10 --d_file scMultiGAN.csv --c_file label.txt --output_dir ./ --lr 1e-4`  
+* `python train_scMultiGAN.py --epoch 100 --batch-size 12 save-interval 10 --d_file "scMultiGAN.csv" --c_file "label.txt" --output_dir "./" --lr 1e-4`  
 &emsp;
 The `scMultiGAN.csv` is the output of the `Data preprocessing process`  
 3. Train scMultiGAN_impute
-* `python train_scMultiGAN_impute.py --epoch 100 --batch-size 12 save-interval 10 --d_file scMultiGAN.csv --c_file label.txt --lr 1e-4 --pretrain "model/0001.pth --checkpoint "model_impute/0001.pth" "--output_dir "./"`  
+* `python train_scMultiGAN_impute.py --epoch 100 --batch-size 12 save-interval 10 --d_file "scMultiGAN.csv" --c_file "label.txt" --lr 1e-4 --pretrain "model/0001.pth --checkpoint "model_impute/0001.pth" "--output_dir "./"`  
 &emsp; 
 When the `imputeronly` parameter is not used, load the pre-trained model of `train_scMultiGAN.py` and load the checkpoint model.
-* `python train_scMultiGAN_impute.py --d_file scMultiGAN.csv --c_file label.txt --imputer_model "model_impute/0001.pth" "--output_dir "./"`   
+* `python train_scMultiGAN_impute.py --d_file "scMultiGAN.csv" --c_file "label.txt" --imputer_model "model_impute/0001.pth" "--output_dir "./"`   
 &emsp;
 When the `imputeronly` parameter is used, load the imputer model of `train_scMultiGAN_impute.py` to impute expression matrix.
 ## Acknowledgments
