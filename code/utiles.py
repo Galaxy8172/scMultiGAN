@@ -6,12 +6,12 @@ from torch.utils.data import Dataset, DataLoader
 import pandas as pd
 
 class CriticUpdater:
-    def __init__(self, critic, critic_optimizer, eps, ones, lambda=10):
+    def __init__(self, critic, critic_optimizer, eps, ones, lambd=10):
         self.critic = critic
         self.critic_optimizer = critic_optimizer
         self.eps = eps
         self.ones = ones
-        self.lambda = lambda
+        self.lambda = lambd
 
     def __call__(self, real, fake,label_hot):
         real = real.detach()
