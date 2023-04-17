@@ -6,12 +6,12 @@ from torch.utils.data import Dataset, DataLoader
 import pandas as pd
 
 class CriticUpdater:
-    def __init__(self, critic, critic_optimizer, eps, ones, gp_lambda=10):
+    def __init__(self, critic, critic_optimizer, eps, ones, lambda=10):
         self.critic = critic
         self.critic_optimizer = critic_optimizer
         self.eps = eps
         self.ones = ones
-        self.gp_lambda = gp_lambda
+        self.lambda = lambda
 
     def __call__(self, real, fake,label_hot):
         real = real.detach()
@@ -23,7 +23,7 @@ class CriticUpdater:
         grad_d = grad(self.critic(interp,label_hot), interp, grad_outputs=self.ones,
                       create_graph=True)[0]
         grad_d = grad_d.view(real.shape[0], -1)
-        grad_penalty = ((grad_d.norm(dim=1) - 1)**2).mean() * self.gp_lambda
+        grad_penalty = ((grad_d.norm(dim=1) - 1)**2).mean() * self.lambda
         w_dist = self.critic(fake,label_hot).mean() - self.critic(real,label_hot).mean()
         loss = w_dist + grad_penalty
         loss.backward()
@@ -31,9 +31,7 @@ class CriticUpdater:
         self.loss_value = loss.item()
 
 def mask_norm(diff, mask):
-    """Mask normalization"""
     dim = 1, 2, 3
-    # Assume mask.sum(1) is non-zero throughout
     return ((diff * mask).sum(dim) / mask.sum(dim)).mean()
 
 def mask_data(data, mask, tau):
@@ -49,9 +47,6 @@ def one_hot(batch,depth):
 class ToTensor(object):
     def __call__(self, sample):
         data,label,mask = sample['real_data'], sample['label'], sample['real_mask']
-        # swap color axis because
-        # numpy image: H x W x C
-        # torch image: C X H X W
         data = data.transpose((2, 0, 1))
         mask = mask.transpose((2, 0, 1))
         return {'real_data': torch.from_numpy(data).to(torch.float32),
@@ -72,8 +67,8 @@ class MyDataset(Dataset):
     def __getitem__(self, idx):
         # use astype('double/float') to sovle the runtime error caused by data mismatch.
         data = self.data.iloc[:, idx].values[0:(self.fig_h * self.fig_h), ].reshape(self.fig_h, self.fig_h, 1).astype(
-            'float')  #
-        label = np.array(self.data_cls[idx]).astype('int32')  #
+            'float')
+        label = np.array(self.data_cls[idx]).astype('int32')
         mask = np.where(data>0,1,0).astype('float')
         sample = {'real_data': data, 'label': label, 'real_mask':mask}
         if self.transform:
