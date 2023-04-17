@@ -11,7 +11,7 @@ class CriticUpdater:
         self.critic_optimizer = critic_optimizer
         self.eps = eps
         self.ones = ones
-        self.lambda = lambd
+        self.lambd = lambd
 
     def __call__(self, real, fake,label_hot):
         real = real.detach()
@@ -23,7 +23,7 @@ class CriticUpdater:
         grad_d = grad(self.critic(interp,label_hot), interp, grad_outputs=self.ones,
                       create_graph=True)[0]
         grad_d = grad_d.view(real.shape[0], -1)
-        grad_penalty = ((grad_d.norm(dim=1) - 1)**2).mean() * self.lambda
+        grad_penalty = ((grad_d.norm(dim=1) - 1)**2).mean() * self.lambd
         w_dist = self.critic(fake,label_hot).mean() - self.critic(real,label_hot).mean()
         loss = w_dist + grad_penalty
         loss.backward()
@@ -56,19 +56,18 @@ class ToTensor(object):
 class MyDataset(Dataset):
     def __init__(self, opt,transform=None):
         self.data = pd.read_csv(opt.d_file, header=0, index_col=0,sep=",")
-        d = pd.read_csv(opt.c_file, header=0, index_col=False)  #
-        self.data_cls = pd.Categorical(d.iloc[:, 0]).codes  # ndarray
+        d = pd.read_csv(opt.c_file, header=0, index_col=False)  
+        self.data_cls = pd.Categorical(d.iloc[:, 0]).codes  
         self.transform = transform
-        self.fig_h = opt.img_size  ##
-
+        self.fig_h = opt.img_size  
     def __len__(self):
         return len(self.data_cls)
 
     def __getitem__(self, idx):
         # use astype('double/float') to sovle the runtime error caused by data mismatch.
         data = self.data.iloc[:, idx].values[0:(self.fig_h * self.fig_h), ].reshape(self.fig_h, self.fig_h, 1).astype(
-            'float')
-        label = np.array(self.data_cls[idx]).astype('int32')
+            'float')  #
+        label = np.array(self.data_cls[idx]).astype('int32')  #
         mask = np.where(data>0,1,0).astype('float')
         sample = {'real_data': data, 'label': label, 'real_mask':mask}
         if self.transform:

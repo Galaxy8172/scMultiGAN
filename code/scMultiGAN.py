@@ -62,7 +62,7 @@ def scMultiGAN(args, data_gen, mask_gen, data_critic, mask_critic, data_loader):
         mask_gen.load_state_dict(checkpoint['mask_gen'])
         data_critic.load_state_dict(checkpoint['data_critic'])
         mask_critic.load_state_dict(checkpoint['mask_critic'])
-        start_epoch = checkpoint['epoch']
+        start_epoch = checkpoint['epoch'] - 1
         critic_updates = checkpoint['critic_updates']
 
     def save_model(path, epoch, critic_updates=0):
@@ -75,6 +75,8 @@ def scMultiGAN(args, data_gen, mask_gen, data_critic, mask_critic, data_loader):
             'critic_updates': critic_updates,
             'args': args,
         }, str(path))
+
+
     start = time.time()
     epoch_start = start
 

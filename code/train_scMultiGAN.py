@@ -44,6 +44,4 @@ mask_gene = Generator.ConvMaskGenerator(img_size=opt.img_size,ncls=opt.ncls,late
 data_critic = Discriminator.ConvCritic(img_size=opt.img_size,ncls=opt.ncls,channels=opt.channels).to(device)
 mask_critic = Discriminator.ConvCritic(img_size=opt.img_size,ncls=opt.ncls,channels=opt.channels).to(device)
 #output_dir = Path("../breast_cancer")
-train = True
-if(train):
-    scMultiGAN(opt, data_gene, mask_gene, data_critic, mask_critic, data_loader=dataloader)
+scMultiGAN(opt, data_gene, mask_gene, data_critic, mask_critic, data_loader=dataloader)

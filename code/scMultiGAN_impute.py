@@ -2,7 +2,7 @@ import torch
 import torch.optim as optim
 import time
 import sys
-import seaborn as sns
+import os
 from utiles import CriticUpdater, mask_norm, mkdir, mask_data,one_hot,GeneratorLoss
 from pathlib import Path
 use_cuda = torch.cuda.is_available()
@@ -11,12 +11,13 @@ Tensor = torch.cuda.FloatTensor if use_cuda else torch.Tensor
 
 def scMultiGAN_impute(args, data_gen, imputer,
                    impu_critic,
-                  data_loader, output_dir, checkpoint=None):
-    impute_dir = output_dir
-    mkdir(impute_dir/'model_impute')
-    model_dir = Path('../breast_cancer/model_impute')
+                  data_loader):
+    impute_dir = args.output_dir
+    checkpoint = args.checkpoint
+    mkdir(Path(impute_dir)/'model_impute')
+    model_dir = os.path.join(impute_dir,"model_impute")
     n_critic = args.n_critic
-    gp_lambda = args.gp_lambda
+    lambd = args.lambd
     batch_size = args.batch_size
     nz = args.latent_dim
     epochs = args.epoch
@@ -33,22 +34,30 @@ def scMultiGAN_impute(args, data_gen, imputer,
     impu_noise = torch.FloatTensor(batch_size, args.channels,img_size,img_size).to(device)
     eps = torch.FloatTensor(batch_size, 1, 1, 1).to(device)
     ones = torch.ones(batch_size).to(device)
-    lrate = 1e-4
-    imputer_lrate = 1e-5
+    #lrate = 1e-4
+    imputer_lrate = args.lr
 
     generator_loss = GeneratorLoss()
     imputer_optimizer = optim.Adam(
-        imputer.parameters(), lr=imputer_lrate, betas=(.5, .9))
+        imputer.parameters(), lr=imputer_lrate)
     impu_critic_optimizer = optim.Adam(
-        impu_critic.parameters(), lr=imputer_lrate, betas=(.5, .9))
+        impu_critic.parameters(), lr=imputer_lrate)
     update_impu_critic = CriticUpdater(
-        impu_critic, impu_critic_optimizer, eps, ones, gp_lambda)
+        impu_critic, impu_critic_optimizer, eps, ones, lambd)
 
     start_epoch = 0
     critic_updates = 0
 
     pretrain = torch.load(args.pretrain, map_location='cpu')
     data_gen.load_state_dict(pretrain['data_gen'])
+    
+    if checkpoint:
+        print("Using pretained model {}".format(checkpoint))
+        checkpoint = torch.load(Path(checkpoint))
+        imputer.load_state_dict(checkpoint['imputer'])
+        impu_critic.load_state_dict(checkpoint['impu_critic'])
+        start_epoch = checkpoint['epoch']-1
+        critic_updates = checkpoint['critic_updates']
 
 
     def save_model(path, epoch, critic_updates=0):
@@ -59,14 +68,12 @@ def scMultiGAN_impute(args, data_gen, imputer,
             'critic_updates': critic_updates,
             'args': args,
         }, str(path))
-
-    sns.set()
     start = time.time()
     epoch_start = start
 
 
     for epoch in range(start_epoch, epochs):
-        print('start train')
+        #print('start train')
         sum_data_loss, sum_mask_loss, sum_impu_loss = 0, 0, 0
         for i,real_sample in enumerate(data_loader):
             real_data = real_sample['real_data'].to(device)
