@@ -1,8 +1,9 @@
 # scMultiGAN: accurate cell-specific imputation method for single-cell transcriptomes using multiple deep generative adversarial networks
 The wide application of single-cell RNA sequencing (scRNA-seq) technology has made it possible to identify cell types and study cell states at a single-cell level. However, the existence of missing values is a critical issue that needs to be addressed during scRNA-seq data analysis. Although numerous computational imputation approaches have been proposed, many existing methods rely on simplistic assumptions about the data while ignoring the gene-gene expression dependencies. This can lead to imprecise gene expression estimates, especially in cases where there is complex scRNA-seq data distribution.  This paper proposes a deep learning model called scMultiGAN based on Generative Adversarial Networks (GAN) to tackle the missing value problem. Unlike traditional GAN-based imputation methods which generate the missing values based on random noises, scMultiGAN utilizes a two-stage training process with the collaboration of multiple GANs, which enables accurate cell-specific imputation. Experimental results demonstrate the effectiveness of scMultiGAN in  imputation accuracy, cell clustering, gene differential analysis, and trajectory analysis, outperforming existing methods. Furthermore, scMultiGAN is salable to large scRNA-seq datasets and works stable across sequencing platforms.
 ## Description
-The input to scMultiGAN is a pre-processed count single cell matrix, with columns representing cells and rows representing genes. It's output is an imputed count matrix with the same dimension. The complete pipeline is described with the following image : 
-![scMultiGAN-Pipeline](images/Framework.pdf).
+The input to scMultiGAN is a pre-processed count single cell matrix, with columns representing cells and rows representing genes. It's output is an imputed count matrix with the same dimension. The complete pipeline and the datasets used in the paper is described with the following image 
+![scMultiGAN-Pipeline](images/framework.png).
+![Datasets](images/datasets.png)
 ## Environment Requirement
 1. `R version > 3.5`
 * argparse  
