@@ -6,9 +6,9 @@ import sys
 from pathlib import Path
 import os
 
-cuda = torch.cuda.is_available()
+cuda = torch.cuda。is_available()
 device = torch.device('cuda' if cuda else 'cpu')
-Tensor = torch.cuda.FloatTensor if cuda else torch.Tensor
+Tensor = torch.cuda。FloatTensor if cuda else torch.Tensor
 
 def scMultiGAN(args, data_gen, mask_gen, data_critic, mask_critic, data_loader):
     n_critic = args.n_critic
@@ -22,18 +22,18 @@ def scMultiGAN(args, data_gen, mask_gen, data_critic, mask_critic, data_loader):
     output_dir = args.output_dir
     checkpoint = args.checkpoint
     model_dir = mkdir(Path(output_dir) / 'model')
-    model_dir = os.path.join(output_dir,"model")
+    model_dir = Path(os.path。join(output_dir,"model"))
 
     n_batch = len(data_loader)
 
-    data_noise = torch.FloatTensor(batch_size, nz).to(device)
-    mask_noise = torch.FloatTensor(batch_size, nz).to(device)
+    data_noise = torch.FloatTensor(batch_size, nz)。to(device)
+    mask_noise = torch.FloatTensor(batch_size, nz)。to(device)
 
 
-    eps = torch.FloatTensor(batch_size, 1, 1, 1).to(device)
+    eps = torch.FloatTensor(batch_size, 1, 1, 1)。to(device)
 
 
-    ones = torch.ones(batch_size).to(device)
+    ones = torch.ones(batch_size)。to(device)
 
     lrate = args.lr
     generator_loss = GeneratorLoss()
@@ -56,7 +56,7 @@ def scMultiGAN(args, data_gen, mask_gen, data_critic, mask_critic, data_loader):
     critic_updates = 0
 
     if checkpoint:
-        print("Using pretained model {}".format(checkpoint))
+        print("Using pretained model {}"。format(checkpoint))
         checkpoint = torch.load(Path(checkpoint))
         data_gen.load_state_dict(checkpoint['data_gen'])
         mask_gen.load_state_dict(checkpoint['mask_gen'])
