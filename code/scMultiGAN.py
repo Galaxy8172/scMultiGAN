@@ -6,9 +6,9 @@ import sys
 from pathlib import Path
 import os
 
-cuda = torch.cuda。is_available()
+cuda = torch.cuda.is_available()
 device = torch.device('cuda' if cuda else 'cpu')
-Tensor = torch.cuda。FloatTensor if cuda else torch.Tensor
+Tensor = torch.cuda.FloatTensor if cuda else torch.Tensor
 
 def scMultiGAN(args, data_gen, mask_gen, data_critic, mask_critic, data_loader):
     n_critic = args.n_critic
