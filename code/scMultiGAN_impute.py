@@ -5,9 +5,9 @@ import sys
 import os
 from utiles import CriticUpdater, mask_norm, mkdir, mask_data,one_hot,GeneratorLoss
 from pathlib import Path
-use_cuda = torch.cuda。is_available()
+use_cuda = torch.cuda.is_available()
 device = torch.device('cuda' if use_cuda else 'cpu')
-Tensor = torch.cuda。FloatTensor if use_cuda else torch.Tensor
+Tensor = torch.cuda.FloatTensor if use_cuda else torch.Tensor
 
 def scMultiGAN_impute(args, data_gen, imputer,
                    impu_critic,
@@ -27,13 +27,13 @@ def scMultiGAN_impute(args, data_gen, imputer,
     gamma = args.gamma
     tau = args.tau
     img_size = args.img_size
-    update_all_networks = 不 args.imputeronly
+    update_all_networks = not args.imputeronly
 
     n_batch = len(data_loader)
-    data_noise = torch.FloatTensor(batch_size, nz)。to(device)
-    impu_noise = torch.FloatTensor(batch_size, args.channels,img_size,img_size)。to(device)
-    eps = torch.FloatTensor(batch_size, 1, 1, 1)。to(device)
-    ones = torch.ones(batch_size)。to(device)
+    data_noise = torch.FloatTensor(batch_size, nz).to(device)
+    impu_noise = torch.FloatTensor(batch_size, args.channels,img_size,img_size).to(device)
+    eps = torch.FloatTensor(batch_size, 1, 1, 1).to(device)
+    ones = torch.ones(batch_size).to(device)
     #lrate = 1e-4
     imputer_lrate = args.lr
 
