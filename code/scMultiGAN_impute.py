@@ -15,7 +15,7 @@ def scMultiGAN_impute(args, data_gen, imputer,
     impute_dir = args.output_dir
     checkpoint = args.checkpoint
     mkdir(Path(impute_dir)/'model_impute')
-    model_dir = Path(os.path。join(impute_dir,"model_impute"))
+    model_dir = Path(os.path.join(impute_dir,"model_impute"))
     n_critic = args.n_critic
     lambd = args.lambd
     batch_size = args.batch_size
@@ -121,7 +121,7 @@ def scMultiGAN_impute(args, data_gen, imputer,
         print("epoch {} data_loss is {}".format(epoch + 1, mean_impu_loss))
 
         if save_model_interval > 0 and (epoch + 1) % save_model_interval == 0:
-            save_model(model_dir / f'{epoch:04d}.pth', epoch, critic_updates)
+            save_model(os.path.join(model_dir , f'{epoch:04d}.pth'), epoch, critic_updates)
         epoch_end = time.time()
         time_elapsed = epoch_end - start
         epoch_time = epoch_end - epoch_start
