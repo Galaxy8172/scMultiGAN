@@ -4,7 +4,7 @@ The wide application of single-cell RNA sequencing (scRNA-seq) technology has ma
 The input to scMultiGAN is a pre-processed count single cell matrix, with columns representing cells and rows representing genes. It's output is an imputed count matrix with the same dimension. The complete pipeline and the datasets used in the paper is described with the following image.
 
 ![scMultiGAN-Pipeline](images/framework.png)
-![Datasets](images/datasets.png)
+![Datasets](images/dataset.png)
 ## Environment Requirement
 1. `R version > 3.5`
 * argparse  
