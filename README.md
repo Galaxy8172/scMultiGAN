@@ -23,7 +23,7 @@ We used a demo dataset that contains the no-imputed data and the corresponding c
 --file_suffix             #str, suffix of the input file, "csv" or "txt/tsv"
 --label_file_path         #str, path of the label file
 ```
-3. `train_scMultiGAN.py`
+2. `train_scMultiGAN.py`
 ```bash
 --epoch            #int
 --batch-size       #int
